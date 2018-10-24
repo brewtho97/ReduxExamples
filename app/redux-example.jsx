@@ -2,15 +2,8 @@ const redux = require('redux');
 
 console.log('Starting redux example...');
 
-let stateDefault = {
-  name: 'Anonymous',
-  hobbies: [],
-  movies: []
-}
-
-let nextHobbyID = 1;
-let nextMovieID = 1;
-
+//NAME REDUCER AND ACTION GENERATOR
+//---------------------------------
 let nameReducer = (state = 'Anonymous', action) => {
   switch (action.type) {
     case 'CHANGE_NAME':
@@ -20,6 +13,16 @@ let nameReducer = (state = 'Anonymous', action) => {
   }
 };
 
+let changeName = (name) => {
+  return {
+    type: 'CHANGE_NAME',
+    name
+  }
+}
+
+//HOBBY REDUCER AND ACTION GENERATOR
+//---------------------------------
+let nextHobbyID = 1;
 let hobbiesReducer = (state = [], action) => {
   switch (action.type) {
     case 'ADD_HOBBY':
@@ -37,6 +40,23 @@ let hobbiesReducer = (state = [], action) => {
   }
 };
 
+let addHobby = (hobby) => {
+  return {
+    type: 'ADD_HOBBY',
+    hobby
+  }
+}
+
+let removeHobby = (id) => {
+  return {
+    type: 'REMOVE_HOBBY',
+    id
+  }
+}
+
+//MOVIE REDUCER AND ACTION GENERATOR
+//---------------------------------
+let nextMovieID = 1;
 let moviesReducer = (state = [], action) => {
   switch(action.type) {
     case 'ADD_MOVIE':
@@ -44,8 +64,8 @@ let moviesReducer = (state = [], action) => {
         ...state,
         {
           id: nextMovieID++,
-          title: action.movie.title,
-          genre: action.movie.genre
+          title: action.title,
+          genre: action.genre
         }
       ];
     case 'REMOVE_MOVIE':
@@ -54,6 +74,21 @@ let moviesReducer = (state = [], action) => {
       return state;
   }
 };
+
+let addMovie = (title, genre) => {
+  return {
+    type: 'ADD_MOVIE',
+    title,
+    genre
+  };
+}
+
+let removeMovie = (id) => {
+  return {
+    type: 'REMOVE_MOVIE',
+    id
+  };
+}
 
 let reducer = redux.combineReducers({
   name: nameReducer,
@@ -73,43 +108,12 @@ let unsubscribe = store.subscribe(() => {
 });
 
 //Sends off an action, reducer has to handle the action.
-store.dispatch({
-  type: 'CHANGE_NAME',
-  name: 'Thomas'
-}); 
-
-store.dispatch({
-  type: 'ADD_HOBBY',
-  hobby: 'Programming'
-});
-
-store.dispatch({
-  type: 'ADD_HOBBY',
-  hobby: 'Reading'
-});
-
-store.dispatch({
-  type: 'REMOVE_HOBBY',
-  id: 2
-});
+store.dispatch(changeName('Thomas')); 
+store.dispatch(addHobby('Programming'));
+store.dispatch(addHobby('Reading'));
+store.dispatch(removeHobby(2));
 //unsubscribe(); //Stops the subscribe function from running on store changes
-
-store.dispatch({
-  type: 'CHANGE_NAME',
-  name: 'Amelia'
-});
-
-store.dispatch({
-  type: 'ADD_MOVIE',
-  movie: {title: 'Scott Pilgrim Vs the World', genre: 'Comedy'}
-});
-
-store.dispatch({
-  type: 'ADD_MOVIE',
-  movie: { title: 'Whiplash', genre: 'Thriller' }
-});
-
-store.dispatch({
-  type: 'REMOVE_MOVIE',
-  id: 1
-});
+store.dispatch(changeName('Kim'));
+store.dispatch(addMovie('Scott Pilgrim vs the World', 'Comedy'));
+store.dispatch(addMovie('Whiplash', 'Drama'));
+store.dispatch(removeMovie(1));
